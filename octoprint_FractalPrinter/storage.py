@@ -11,7 +11,7 @@ class StorageManager:
 		self.plugin = plugin
 		self.file_manager = plugin._file_manager
 
-	def save_to_local_folder(self, currentFilename, currentPath, pathToFolder = '/Fractal/', print=False):
+	def save_to_local_folder(self, currentFilename, currentPath, pathToFolder = '/Fractal/', print_after=False):
 		wrapper = DiskFileWrapper(currentFilename, currentPath)
 		canonPath, canonFilename = self.file_manager.canonicalize(FileDestinations.LOCAL, wrapper.filename)
 
@@ -42,7 +42,7 @@ class StorageManager:
 
 		path = self.file_manager.path_on_disk(FileDestinations.LOCAL, added_file)
 
-		if print:
+		if print_after:
 			self.plugin.printerManager.printFile(path=path)
 
 		# eventManager.fire(Events.UPLOAD, {"name": futureFilename,

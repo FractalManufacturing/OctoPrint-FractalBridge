@@ -1,7 +1,7 @@
 import threading
 import queue
 import requests
-from octoprint.filemanager import FileDestinations
+
 
 class Worker(threading.Thread):
 
@@ -38,7 +38,7 @@ class Worker(threading.Thread):
 
 					r.raise_for_status()
 
-					added_file = self.plugin.storageManager.save_to_local_folder(filename, fullPath, print=print_after)
+					added_file = self.plugin.storageManager.save_to_local_folder(filename, fullPath, print_after=print_after)
 
 				except Exception as e:
 					self.manager.plugin._logger.error('Error downloading file', e)
