@@ -34,7 +34,7 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 
 	def on_after_startup(self):
 		self._logger.info("Server started. Attempting connection")
-		self.DBManager = DBManager('files.db')
+		self.DBManager = DBManager(self, 'files.db')
 		self.downloadManager = DownloadManager(self)
 		self.printerManager = PrinterManager(self)
 		self.storageManager = StorageManager(self)
