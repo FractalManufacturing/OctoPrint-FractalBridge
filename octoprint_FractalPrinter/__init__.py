@@ -64,7 +64,7 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 	# Custom methods
 
 	def connect_to_sv(self):
-		self.ws = WebsocketManager(url="ws://localhost:8000/ws/printer/",
+		self.ws = WebsocketManager(url="ws://181.167.199.140:8000/ws/printer/",
 								plugin=self,
 								on_ws_message=self.on_server_receive)
 

@@ -1,9 +1,10 @@
 import sqlite3
+import os
 
 class DBManager():
 
-	def __init__(self, db_name):
-		self.db_name = db_name
+	def __init__(self, plugin, db_name):
+		self.db_name = os.path.join(plugin.get_plugin_data_folder(), db_name)
 		self.setupDB()
 
 	def setupDB(self):
