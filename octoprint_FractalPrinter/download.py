@@ -21,13 +21,13 @@ class Worker(threading.Thread):
 				return
 
 			if 'url' in fileData:
-				downloadUrl = fileData['url']
+				download_url = fileData['url']
 				filename = fileData['filename']
-				print = fileData['print']
+				print_after = fileData['print_after']
 				added_file = added_path = None
 
 				try:
-					r = requests.get(url=downloadUrl, stream=True)
+					r = requests.get(url=download_url, stream=True)
 					fullPath = "%s/%s" % (self.plugin._basefolder, filename)
 
 					if r.status_code == 200:
@@ -38,7 +38,7 @@ class Worker(threading.Thread):
 
 					r.raise_for_status()
 
-					added_file = self.plugin.storageManager.save_to_local_folder(filename, fullPath, print=print)
+					added_file = self.plugin.storageManager.save_to_local_folder(filename, fullPath, print=print_after)
 
 				except Exception as e:
 					self.manager.plugin._logger.error('Error downloading file', e)
