@@ -68,7 +68,8 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 								plugin=self,
 								on_ws_message=self.on_server_receive)
 
-		thread = threading.Thread(target=self.ws.run, daemon=True)
+		thread = threading.Thread(target=self.ws.run)
+		thread.daemon = True
 		thread.start()
 
 	def disconnect_from_sv(self):
