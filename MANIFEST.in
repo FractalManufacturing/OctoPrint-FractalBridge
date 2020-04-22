@@ -1,0 +1,4 @@
+include README.md
+recursive-include octoprint_FractalPrinter/templates *
+recursive-include octoprint_FractalPrinter/translations *
+recursive-include octoprint_FractalPrinter/static *
