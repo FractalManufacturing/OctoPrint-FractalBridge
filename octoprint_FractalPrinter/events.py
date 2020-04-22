@@ -1,6 +1,4 @@
-from enum import Enum
-
-class RelevantEvents(Enum):
+class EventHandler:
 	CONNECTED = 'Connected'
 	DISCONNECTED = 'Disconnected'
 	ERROR = 'Error'
@@ -13,17 +11,25 @@ class RelevantEvents(Enum):
 	PRINT_PAUSED = 'PrintPaused'
 	PRINT_RESUMED = 'PrintResumed'
 
-	@classmethod
-	def to_list(cls):
-		return [item.value for item in cls]
-
-class EventHandler:
+	RELEVANT_EVENTS = [
+		CONNECTED,
+		DISCONNECTED,
+		ERROR,
+		PRINTER_STATE_CHANGED,
+		FILE_ADDED,
+		PRINT_STARTED,
+		PRINT_FAILED,
+		PRINT_DONE,
+		PRINT_CANCELLED,
+		PRINT_PAUSED,
+		PRINT_RESUMED
+	]
 
 	def __init__(self, plugin):
 		self.plugin = plugin
 
 	def on_event(self, event, payload):
-		if event in RelevantEvents.to_list():
+		if event in self.RELEVANT_EVENTS:
 			self.plugin.ws.sendEvent(event, payload)
 
 	def on_file_storage_fail(self, error):
