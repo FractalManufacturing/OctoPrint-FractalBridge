@@ -3,8 +3,8 @@ from __future__ import absolute_import, unicode_literals
 
 import octoprint.plugin
 import threading
-import time
 import json
+import flask
 from .connection import WebsocketManager
 from .events import EventHandler
 from .download import DownloadManager
@@ -18,7 +18,9 @@ from octoprint.filemanager import FileDestinations
 class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 							octoprint.plugin.EventHandlerPlugin,
 							octoprint.plugin.SettingsPlugin,
-							octoprint.plugin.TemplatePlugin):
+							octoprint.plugin.TemplatePlugin,
+							octoprint.plugin.AssetPlugin,
+							octoprint.plugin.BlueprintPlugin):
 
 
 	def __init__(self):
@@ -58,15 +60,30 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 
 	def get_template_configs(self):
 		return [
-			dict(type="settings", name='Fractal',  custom_bindings=False)
+			dict(type="settings", name='Fractal', custom_bindings=True)
 		]
+
+	# AssetPlugin mixin
+
+	def get_assets(self):
+		return dict(
+			js=['js/fractalprinter.js']
+		)
+
+	# BlueprintPlugin mixin
+
+	@octoprint.plugin.BlueprintPlugin.route("/connect", methods=["GET"])
+	def connect_from_octoprint_frontend(self):
+		self.connect_to_sv()
+		return flask.make_response('connected')
 
 	# Custom methods
 
 	def connect_to_sv(self):
-		self.ws = WebsocketManager(url="ws://181.167.199.140:8000/ws/printer/",
-								plugin=self,
-								on_ws_message=self.on_server_receive)
+		if not self.ws:
+			self.ws = WebsocketManager(url="ws://181.167.199.140:8000/ws/printer/",
+									plugin=self,
+									on_ws_message=self.on_server_receive)
 
 		thread = threading.Thread(target=self.ws.run)
 		thread.daemon = True
