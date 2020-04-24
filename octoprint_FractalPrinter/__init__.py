@@ -52,8 +52,14 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 	# SettingsPlugin mixin
 
 	def get_settings_defaults(self):
+
+		api_url = 'http://181.167.199.140:8000'
+		ws_url = 'ws://181.167.199.140:8000/ws/printer/'
+
 		return dict(
 			token="",
+			api_url=api_url,
+			ws_url=ws_url
 		)
 
 	# TemplatePlugin mixin
@@ -81,7 +87,8 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 
 	def connect_to_sv(self):
 		if not self.ws:
-			self.ws = WebsocketManager(url="ws://181.167.199.140:8000/ws/printer/",
+			ws_url = self._settings.get(['ws_url'])
+			self.ws = WebsocketManager(url=ws_url,
 									plugin=self,
 									on_ws_message=self.on_server_receive)
 
@@ -95,7 +102,9 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 	def on_server_receive(self, ws, raw_message):
 
 		try:
+			self._logger.info(raw_message)
 			parsed_message = json.loads(raw_message)
+			self._logger.info(parsed_message)
 			directive = parsed_message['directive'] if 'directive' in parsed_message else None
 			extra = parsed_message['extra'] if 'extra' in parsed_message else None
 

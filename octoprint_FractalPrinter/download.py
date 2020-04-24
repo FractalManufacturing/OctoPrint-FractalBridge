@@ -21,10 +21,11 @@ class Worker(threading.Thread):
 				return
 
 			if 'url' in fileData:
-				download_url = fileData['url']
+				download_endpoint = fileData['url']
+				download_url = self.plugin._settings.get(['api_url']) + download_endpoint
 				filename = fileData['filename']
 				print_after = fileData['print_after']
-				added_file = added_path = None
+				added_file = None
 
 				try:
 					r = requests.get(url=download_url, stream=True)
