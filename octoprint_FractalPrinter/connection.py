@@ -38,8 +38,17 @@ class WebsocketManager():
 												on_close=on_close)
 
 
-	def run(self):
-		self.ws.run_forever()
+	def run(self, reconnect=False):
+		if reconnect:
+			while True:
+				try:
+					self.ws.run_forever()
+				except Exception as e:
+					self.plugin._logger.error("Websocket connection Error  : {0}".format(e))
+				self.plugin._logger.info("Reconnecting websocket  after 5 sec")
+				time.sleep(5)
+		else:
+			self.ws.run_forever()
 
 	@property
 	def is_connected(self):

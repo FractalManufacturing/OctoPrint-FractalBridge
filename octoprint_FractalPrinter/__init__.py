@@ -92,7 +92,7 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 									plugin=self,
 									on_ws_message=self.on_server_receive)
 
-		thread = threading.Thread(target=self.ws.run)
+		thread = threading.Thread(target=self.ws.run, kwargs={'reconnect': True})
 		thread.daemon = True
 		thread.start()
 
@@ -102,7 +102,6 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 	def on_server_receive(self, ws, raw_message):
 
 		try:
-			self._logger.info(raw_message)
 			parsed_message = json.loads(raw_message)
 			self._logger.info(parsed_message)
 			directive = parsed_message['directive'] if 'directive' in parsed_message else None

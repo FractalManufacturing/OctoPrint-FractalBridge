@@ -27,7 +27,7 @@ plugin_author = "Fractal"
 plugin_author_email = "you@example.com"
 
 # The plugin's homepage URL. Can be overwritten within OctoPrint's internal data via __plugin_url__ in the plugin module
-plugin_url = "https://github.com/you/OctoPrint-Fractalprinter"
+plugin_url = "https://github.com/Popeyef5/OctoPrint-Fractalprinter"
 
 # The plugin's license. Can be overwritten within OctoPrint's internal data via __plugin_license__ in the plugin module
 plugin_license = "AGPLv3"
