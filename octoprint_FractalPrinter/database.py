@@ -16,6 +16,16 @@ class DBManager():
 		conn.commit()
 		conn.close()
 
+	def resetDB(self):
+		conn = sqlite3.connect(self.db_name)
+		c = conn.cursor()
+
+		c.execute("""DROP TABLE IF EXISTS print_files""")
+		c.execute("""CREATE TABLE IF NOT EXISTS print_files (id INTEGER PRIMARY KEY, filename TEXT, path TEXT)""")
+
+		conn.commit()
+		conn.close()
+
 	def getFilePath(self, fileId):
 		conn = sqlite3.connect(self.db_name)
 		c = conn.cursor()

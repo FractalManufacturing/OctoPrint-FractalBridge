@@ -83,6 +83,11 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 		self.connect_to_sv()
 		return flask.make_response('connected')
 
+	@octoprint.plugin.BlueprintPlugin.route("/reset_db", methods=["GET"])
+	def resetDB(self):
+		self.DBManager.resetDB()
+		return flask.make_response('DB reset')
+
 	# Custom methods
 
 	def connect_to_sv(self):
