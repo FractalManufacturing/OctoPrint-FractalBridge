@@ -127,6 +127,9 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 			if directive == 'report':
 				pass
 
+			if directive == 'filament':
+				self.printerManager.changeFilament(extra)
+
 			if directive == 'download':
 				self.downloadManager.enqueue(extra)
 

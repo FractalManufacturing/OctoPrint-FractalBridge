@@ -4,6 +4,14 @@ class PrinterManager:
 		self.plugin = plugin
 		self.printer = plugin._printer
 
+	def changeFilament(self, filamentData=None):
+		if filamentData is None:
+			filamentData = {'tool': 0, 'temperature': 210}
+
+		tool_name = "tool{}".format(filamentData['tool'])
+		self.printer.set_temperature(tool_name, filamentData['temperature'])
+		self.printer.commands("M600")
+
 	def printFile(self, fileData=None, path=None):
 		if fileData:
 			if self.plugin.DBManager.getFilePath(fileData['id']):
