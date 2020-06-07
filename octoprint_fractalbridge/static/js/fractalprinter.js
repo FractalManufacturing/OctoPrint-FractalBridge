@@ -1,10 +1,10 @@
 $(function() {
-    function FractalPrinterViewModel(parameters) {
+    function FractalBridgeViewModel(parameters) {
         var self = this;
 
         self.settings = parameters[0];
 
-        self.pluginName = "FractalPrinter";
+        self.pluginName = "fractalbridge";
 
         self.connectToFractal = function () {
             var url = window.PLUGIN_BASEURL + self.pluginName + '/connect'
@@ -20,8 +20,8 @@ $(function() {
     }
 
     OCTOPRINT_VIEWMODELS.push([
-        FractalPrinterViewModel,
+        FractalBridgeViewModel,
         ["settingsViewModel"],
-        ["#settings_plugin_FractalPrinter"]
+        ["#settings_plugin_fractalbridge"]
     ]);
 });
