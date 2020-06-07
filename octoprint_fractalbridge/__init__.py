@@ -73,7 +73,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 	def get_assets(self):
 		return dict(
-			js=['js/fractalprinter.js']
+			js=['js/fractalbridge.js']
 		)
 
 	# BlueprintPlugin mixin
