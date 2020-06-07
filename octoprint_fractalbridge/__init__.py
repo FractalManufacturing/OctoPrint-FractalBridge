@@ -15,7 +15,7 @@ from octoprint.filemanager import FileDestinations
 
 
 
-class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
+class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 							octoprint.plugin.EventHandlerPlugin,
 							octoprint.plugin.SettingsPlugin,
 							octoprint.plugin.TemplatePlugin,
@@ -53,8 +53,8 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 
 	def get_settings_defaults(self):
 
-		api_url = 'http://192.168.1.206:8000'
-		ws_url = 'ws://192.168.1.206:8000/ws/printer/'
+		api_url = 'https://fractal.tech'
+		ws_url = 'wss://fractal.tech/ws/printer/'
 
 		return dict(
 			token="",
@@ -136,6 +136,9 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 			if directive == 'print':
 				self.printerManager.printFile(extra)
 
+			if directive == 'nuke':
+				self.DBManager.resetDB()
+
 			if 'error' in parsed_message:
 				self._logger.error(parsed_message['error'])
 
@@ -148,4 +151,4 @@ class FractalPrinterPlugin(octoprint.plugin.StartupPlugin,
 
 
 __plugin_pythoncompat__ = ">=2.7,<4"
-__plugin_implementation__ = FractalPrinterPlugin()
+__plugin_implementation__ = FractalBridgePlugin()
