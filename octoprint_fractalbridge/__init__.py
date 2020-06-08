@@ -27,6 +27,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 		self.lock = threading.RLock()
 		self.eventHandler = EventHandler(self)
 		self.ws = None
+		self.ws_thread = None
 		self.downloadManager = None
 		self.printerManager = None
 		self.DBManager = None
@@ -91,15 +92,20 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 	# Custom methods
 
 	def connect_to_sv(self):
+		if not self._settings.get(['token']):
+			self._logger.info("No Token provided")
+			return
 		if not self.ws:
 			ws_url = self._settings.get(['ws_url'])
 			self.ws = WebsocketManager(url=ws_url,
 									plugin=self,
 									on_ws_message=self.on_server_receive)
+		else:
+			self.ws.stop()
 
-		thread = threading.Thread(target=self.ws.run, kwargs={'reconnect': True})
-		thread.daemon = True
-		thread.start()
+		self.ws_thread = threading.Thread(target=self.ws.run, kwargs={'reconnect': True})
+		self.ws_thread.daemon = True
+		self.ws_thread.start()
 
 	def disconnect_from_sv(self):
 		self.ws = None
@@ -140,6 +146,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 				self.DBManager.resetDB()
 
 			if 'error' in parsed_message:
+				self.ws.stop()
 				self._logger.error(parsed_message['error'])
 
 		except Exception as e:

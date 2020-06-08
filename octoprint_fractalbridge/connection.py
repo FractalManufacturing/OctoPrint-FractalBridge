@@ -31,6 +31,7 @@ class WebsocketManager():
 
 		self.lock = threading.RLock()
 		self.plugin = plugin
+		self.enabled = True
 		self.ws = websocket.WebSocketApp(url=url,
 												on_open=on_open,
 												on_message=on_message,
@@ -39,8 +40,9 @@ class WebsocketManager():
 
 
 	def run(self, reconnect=False):
+		self.enabled = True
 		if reconnect:
-			while True:
+			while True and self.enabled:
 				try:
 					self.ws.run_forever()
 				except Exception as e:
@@ -52,7 +54,8 @@ class WebsocketManager():
 
 	@property
 	def is_connected(self):
-		return self.ws.sock and self.ws.sock.connected
+		with self.lock:
+			return self.ws.sock and self.ws.sock.connected
 
 	def sendData(self, data):
 		with self.lock:
@@ -76,3 +79,8 @@ class WebsocketManager():
 		if 'token' not in data:
 			data['token'] = self.plugin.get_token()
 		return data
+
+	def stop(self):
+		self.enabled = False
+		with self.lock:
+			self.ws.close()
