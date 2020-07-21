@@ -10,6 +10,7 @@ class WebsocketManager():
 		def on_open(ws):
 			plugin._logger.info('Fractal connection enabled')
 			self.plugin.printerManager.connect()
+			self.plugin._plugin_manager.send_plugin_message(self.plugin._identifier, {"connected": True})
 
 		def on_message(ws, message):
 			if on_ws_message:
@@ -22,12 +23,14 @@ class WebsocketManager():
 				on_ws_error(ws, error)
 			else:
 				plugin._logger.error(error)
+				self.plugin._plugin_manager.send_plugin_message(self.plugin._identifier, {"connected": False})
 
 		def on_close(ws):
 			if on_ws_close:
 				on_ws_close(ws)
 			else:
 				plugin._logger.info('Connection closed')
+				self.plugin._plugin_manager.send_plugin_message(self.plugin._identifier, {"connected": False})
 
 		self.lock = threading.RLock()
 		self.plugin = plugin
@@ -42,15 +45,15 @@ class WebsocketManager():
 	def run(self, reconnect=False):
 		self.enabled = True
 		if reconnect:
-			while True and self.enabled:
+			while self.enabled:
 				try:
 					self.ws.run_forever()
 				except Exception as e:
 					self.plugin._logger.error("Websocket connection Error  : {0}".format(e))
-				self.plugin._logger.info("Reconnecting websocket  after 5 sec")
-				time.sleep(5)
+				if self.enabled:
+					time.sleep(5)
 		else:
-			self.ws.run_forever()
+			self.ws.run_forever(ping_interval=10, ping_timeout=8)
 
 	@property
 	def is_connected(self):
@@ -81,6 +84,6 @@ class WebsocketManager():
 		return data
 
 	def stop(self):
-		self.enabled = False
 		with self.lock:
+			self.enabled = False
 			self.ws.close()

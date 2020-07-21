@@ -26,6 +26,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 	def __init__(self):
 		self.lock = threading.RLock()
 		self.eventHandler = EventHandler(self)
+		self.token = None
 		self.ws = None
 		self.ws_thread = None
 		self.downloadManager = None
@@ -41,6 +42,9 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 		self.downloadManager = DownloadManager(self)
 		self.printerManager = PrinterManager(self)
 		self.storageManager = StorageManager(self)
+
+		self.token = self._settings.get(['token'])
+		self._logger.info(self.token)
 		self.connect_to_sv()
 
 		self._file_manager.add_folder(destination=FileDestinations.LOCAL, path='/Fractal/')
@@ -54,8 +58,10 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 	def get_settings_defaults(self):
 
-		api_url = 'https://fractal.tech'
-		ws_url = 'wss://fractal.tech/ws/printer/'
+		# api_url = 'https://fractal.tech'
+		api_url = 'http://localhost:8000'
+		# ws_url = 'wss://fractal.tech/ws/printer/'
+		ws_url = 'ws://localhost:8000/ws/printer/'
 
 		return dict(
 			token="",
@@ -74,15 +80,29 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 	def get_assets(self):
 		return dict(
-			js=['js/fractalbridge.js']
+			js=['js/fractalbridge.js'],
+			css=["css/fractalbridge.css"]
 		)
 
 	# BlueprintPlugin mixin
 
-	@octoprint.plugin.BlueprintPlugin.route("/connect", methods=["GET"])
+	@octoprint.plugin.BlueprintPlugin.route("/connect", methods=["POST"])
 	def connect_from_octoprint_frontend(self):
+		if 'token' in flask.request.values:
+			self.token = flask.request.values['token']
 		self.connect_to_sv()
 		return flask.make_response('connected')
+
+	@octoprint.plugin.BlueprintPlugin.route("/disconnect", methods=["GET"])
+	def disconnect_from_octoprint_frontend(self):
+		self.disconnect_from_sv()
+		return flask.make_response('disconnected')
+
+	@octoprint.plugin.BlueprintPlugin.route("/status", methods=["GET"])
+	def get_connection_status(self):
+		if self.ws:
+			return flask.make_response(json.dumps({'connected': self.ws.is_connected}))
+		return flask.make_response(json.dumps({'connected': False}))
 
 	@octoprint.plugin.BlueprintPlugin.route("/reset_db", methods=["GET"])
 	def resetDB(self):
@@ -92,7 +112,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 	# Custom methods
 
 	def connect_to_sv(self):
-		if not self._settings.get(['token']):
+		if not self.token:
 			self._logger.info("No Token provided")
 			return
 		if not self.ws:
@@ -108,13 +128,13 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 		self.ws_thread.start()
 
 	def disconnect_from_sv(self):
-		self.ws = None
+		if self.ws:
+			self.ws.stop()
 
 	def on_server_receive(self, ws, raw_message):
 
 		try:
 			parsed_message = json.loads(raw_message)
-			self._logger.info(parsed_message)
 			directive = parsed_message['directive'] if 'directive' in parsed_message else None
 			extra = parsed_message['extra'] if 'extra' in parsed_message else None
 
@@ -131,7 +151,9 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 				self.printerManager.resumePrint()
 
 			if directive == 'report':
-				pass
+				status = self.printerManager.reportStatus()
+				status.update({'event': 'report'})
+				self.ws.sendData(status)
 
 			if directive == 'filament':
 				self.printerManager.changeFilament(extra)
@@ -153,7 +175,7 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 			self._logger.error('Error receiving message from server', e)
 
 	def get_token(self):
-		return self._settings.get(['token'])
+		return self.token
 
 
 

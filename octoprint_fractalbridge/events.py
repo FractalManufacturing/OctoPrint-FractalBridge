@@ -29,7 +29,7 @@ class EventHandler:
 		self.plugin = plugin
 
 	def on_event(self, event, payload):
-		if event in self.RELEVANT_EVENTS:
+		if event in self.RELEVANT_EVENTS and self.plugin.ws:
 			self.plugin.ws.sendEvent(event, payload)
 
 	def on_file_storage_fail(self, error):

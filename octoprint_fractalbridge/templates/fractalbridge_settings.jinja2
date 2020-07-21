@@ -1,14 +1,40 @@
+<div id=logo-container>
+    <div class="fractal-logo"></div>
+</div>
 <form class="form-horizontal">
     <div class="control-group">
         <label class="control-label">{{ _('Token') }}</label>
         <div class="controls">
-            <input type="text" class="input-block-level" data-bind="value: settings.settings.plugins.fractalbridge.token" placeholder="Insert token here">
+            <input id=token type="text" class="input-block-level" data-bind="value: settings.settings.plugins.fractalbridge.token" placeholder="Insert token here">
         </div>
     </div>
-    <button data-bind="click : connectToFractal" class="btn btn-primary">
-        Connect your printer to Fractal
-    </button>
-    <button data-bind="click : resetDB" class="btn btn-primary">
-        Reset DB
-    </button>
+    <div class="control-group">
+        <div class="controls">
+            <button data-bind="click : connectToFractal" class="btn btn-primary">
+                Connect printer to Fractal
+            </button>
+            <button data-bind="click : disconnectFromFractal" class="btn btn-danger">
+                Disconnect printer from Fractal
+            </button>
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <p><b>Status: <span data-bind="style: { color: status() == 'online' ? 'green' : 'red' }, text: status"></span></b></p>
+        </div>
+        <div class="controls">
+            <p><b>How do I get my token?</b></p>
+        </div>
+        <div class="controls">
+            <p>You can find every printer's token inside the "PRINTERS" tab in the Fractal dashboard. Simply click on the desired printer and copy its token to the clipboard</p>
+        </div>
+        <div class="controls">
+            <p><b>What's Fractal?</b></p>
+        </div>
+        <div class="controls">
+            <p>Fractal is a cloud platform that automates your 3D printing process so that you can spend time where it really matters! How? By managing your printers,
+             scheduling your parts in the smartest way, slicing your models, monitoring your prints and much more! If you haven't yet, give it a try at
+             <a href="https://fractal.tech">https://fractal.tech</a></p>
+        </div>
+    </div>
 </form>

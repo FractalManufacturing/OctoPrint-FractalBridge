@@ -22,6 +22,9 @@ class PrinterManager:
 		elif path:
 			self.printer.select_file(path=path, sd=False, printAfterSelect=True)
 
+	def reportStatus(self):
+		return self.printer.get_current_data()
+
 	def cancelPrint(self):
 		self.printer.cancel_print()
 

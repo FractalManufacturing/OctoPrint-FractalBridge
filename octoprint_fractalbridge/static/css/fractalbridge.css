@@ -1,0 +1,21 @@
+#logo-container {
+    width: 100%;
+    height: 200px;
+}
+
+#logo-container .fractal-logo {
+    width: 100%;
+    height: 100%;
+    background-image: url(../img/fractal-logo.png);
+    background-size: 70%;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.online{
+    color: #00ff00;
+}
+
+.offline{
+    color: #ff0000;
+}
