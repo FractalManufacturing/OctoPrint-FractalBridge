@@ -10,7 +10,7 @@ class PrinterManager:
 
 		# tool_name = "tool{}".format(filamentData['tool'])
 		# self.printer.set_temperature(tool_name, filamentData['temperature'])
-		self.printer.commands(["M109 S{}".format(filamentData['temperature']), "M600"])
+		self.printer.commands(["M104 S{}".format(filamentData['temperature'])])
 
 	def printFile(self, fileData=None, path=None):
 		if fileData:
