@@ -64,7 +64,8 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 		return dict(
 			token="",
 			api_url=api_url,
-			ws_url=ws_url
+			ws_url=ws_url,
+			version=0.1
 		)
 
 	# TemplatePlugin mixin
@@ -139,6 +140,9 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 			if directive == 'authenticate':
 				self.ws.authenticate()
 
+			if directive == 'connect':
+				self.printerManager.connect()
+
 			if directive == 'cancel':
 				self.printerManager.cancelPrint()
 
@@ -150,7 +154,8 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 			if directive == 'report':
 				status = self.printerManager.reportStatus()
-				status.update({'event': 'report'})
+				status.update({'event': 'report',
+							   'version': self._settings.get(['version'])})
 				self.ws.sendData(status)
 
 			if directive == 'filament':
