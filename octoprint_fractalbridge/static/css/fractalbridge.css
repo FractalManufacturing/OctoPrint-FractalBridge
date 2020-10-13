@@ -19,3 +19,8 @@
 .offline{
     color: #ff0000;
 }
+
+#version {
+    text-align: right;
+    margin-right: 12px;
+}
