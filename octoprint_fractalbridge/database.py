@@ -45,7 +45,11 @@ class DBManager():
 
 		return data[2]
 
-	def addFile(self, fileData):
+	def addFile(self, fileData, overwrite=True):
+
+		if overwrite:
+			self.removeFile(fileData)
+
 		conn = sqlite3.connect(self.db_name)
 		c = conn.cursor()
 
@@ -54,3 +58,31 @@ class DBManager():
 
 		conn.commit()
 		conn.close()
+
+	def removeFile(self, fileData):
+		conn = sqlite3.connect(self.db_name)
+		c = conn.cursor()
+
+		t = (fileData['id'], )
+		c.execute('DELETE FROM print_files WHERE id=?', t)
+
+		conn.commit()
+		conn.close()
+
+	def isPresent(self, fileData):
+		conn = sqlite3.connect(self.db_name)
+		c = conn.cursor()
+
+		t = (fileData['id'],)
+		c.execute('SELECT * FROM print_files WHERE id=?', t)
+
+		data = c.fetchone()
+
+		conn.commit()
+		conn.close()
+
+		if data is None:
+			return False
+
+		else:
+			return data[0] == fileData['id'] and data[1] == fileData['filename']

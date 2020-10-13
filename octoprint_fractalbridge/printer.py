@@ -14,7 +14,7 @@ class PrinterManager:
 
 	def printFile(self, fileData=None, path=None):
 		if fileData:
-			if self.plugin.DBManager.getFilePath(fileData['id']):
+			if self.plugin.DBManager.isPresent(fileData):
 				self.printer.select_file(path=self.plugin.DBManager.getFilePath(fileData['id']), sd=False, printAfterSelect=True)
 			else:
 				fileData['print_after'] = True
