@@ -32,6 +32,10 @@ class EventHandler:
 		if event in self.RELEVANT_EVENTS and self.plugin.ws:
 			self.plugin.ws.sendEvent(event, payload)
 
+	def on_file_download_fail(self, error):
+		self.plugin._logger.error(error)
+		self.plugin.ws.sendData({'event': 'FileDownloadFailed', 'payload': '{}'.format(error)})
+
 	def on_file_storage_fail(self, error):
 		self.plugin._logger.error(error)
 		self.plugin.ws.sendData({'event': 'FileSaveFailed', 'payload': '{}'.format(error)})

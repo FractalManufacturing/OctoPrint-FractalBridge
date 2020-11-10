@@ -43,6 +43,7 @@ class Worker(threading.Thread):
 
 				except Exception as e:
 					self.manager.plugin._logger.error('Error downloading file', e)
+					self.plugin.eventHandler.on_file_download_fail('File downlaod error')
 
 				if added_file:
 					fileData['path'] = added_file
