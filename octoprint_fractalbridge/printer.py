@@ -12,6 +12,9 @@ class PrinterManager:
 		# self.printer.set_temperature(tool_name, filamentData['temperature'])
 		self.printer.commands(["M104 S{}".format(filamentData['temperature'])])
 
+	def cooldown(self):
+		self.printer.commands(["M104 S0"])
+
 	def printFile(self, fileData=None, path=None):
 		if fileData:
 			if self.plugin.DBManager.isPresent(fileData):

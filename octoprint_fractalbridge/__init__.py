@@ -158,6 +158,9 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 							   'version': self._settings.get(['version'])})
 				self.ws.sendData(status)
 
+			if directive == 'cooldownhotend':
+				self.printerManager.cooldown()
+
 			if directive == 'filament':
 				self.printerManager.changeFilament(extra)
 
