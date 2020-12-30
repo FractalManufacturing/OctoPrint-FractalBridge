@@ -58,8 +58,8 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 	def get_settings_defaults(self):
 
-		api_url = 'https://192.168.0.14'
-		ws_url = 'wss://192.168.0.14/ws/printer/'
+		api_url = 'http://192.168.0.14'
+		ws_url = 'ws://192.168.0.14/ws/printer/'
 
 		return dict(
 			token="",
