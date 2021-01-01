@@ -1,10 +1,12 @@
 import sqlite3
 import os
+from octoprint.filemanager import FileDestinations
 
 class DBManager():
 
 	def __init__(self, plugin, db_name):
 		self.db_name = os.path.join(plugin.get_plugin_data_folder(), db_name)
+		self.plugin = plugin
 		self.setupDB()
 
 	def setupDB(self):
@@ -85,4 +87,4 @@ class DBManager():
 			return False
 
 		else:
-			return data[0] == fileData['id'] and data[1] == fileData['filename']
+			return data[0] == fileData['id'] and data[1] == fileData['filename'] and self.plugin._file_manager.file_exists(destination=FileDestinations.LOCAL, path=data[2])
