@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 
 import octoprint.plugin
 import threading
+import os
 import json
 import flask
 from .connection import WebsocketManager
@@ -58,8 +59,8 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 
 	def get_settings_defaults(self):
 
-		api_url = 'https://fractal.tech'
-		ws_url = 'wss://fractal.tech/ws/printer/'
+		api_url = os.environ.get('FRACTAL_API_URL', 'https://fractal.tech')
+		ws_url = os.environ.get('FRACTAL_WS_URL', 'wss://fractal.tech/ws/printer/')
 
 		return dict(
 			token="",
