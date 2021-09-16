@@ -108,6 +108,23 @@ class FractalBridgePlugin(octoprint.plugin.StartupPlugin,
 	def resetDB(self):
 		self.DBManager.resetDB()
 		return flask.make_response('DB reset')
+        
+	# Softwareupdate hook
+
+	def get_update_information(self):
+		return dict(
+			fractalbridge=dict(
+				displayName="Fractal Bridge",
+				displayVersion=self._plugin_version,
+
+				type="github_release",
+				user="FractalManufacturing",
+				repo="OctoPrint-FractalBridge",
+				current=self._plugin_version,
+
+				pip="https://github.com/FractalManufacturing/OctoPrint-FractalBridge/archive/{target}.zip"
+			)
+		)
 
 	# Custom methods
 
